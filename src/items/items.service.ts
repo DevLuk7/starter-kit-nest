@@ -21,7 +21,10 @@ export class ItemsService {
   }
 
   findOne(uuid: string): Item | null {
-    const item = this.items.find((item) => item.uuid === uuid);
+    const item = this.items.find((item) => {
+      return item.uuid === uuid;
+    });
+
     return item ?? null;
   }
 

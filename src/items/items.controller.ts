@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -25,9 +26,15 @@ export class ItemsController {
     return this.itemsService.findAll();
   }
 
-  @Get(':id')
+  @Get(':uuid')
   findOne(@Param('uuid') uuid: string) {
-    return this.itemsService.findOne(uuid);
+    const item = this.itemsService.findOne(uuid);
+
+    if (!item) {
+      throw new NotFoundException();
+    }
+
+    return item;
   }
 
   @Patch(':uuid')
