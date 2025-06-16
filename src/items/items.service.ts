@@ -1,54 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { DATABASE_CONNECTION } from '../database/database.module';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { Item } from './entities/item.entity';
+import { Item, NewItem, items } from './entities/item.entity';
+import * as schema from '../database/schema';
 
 @Injectable()
 export class ItemsService {
-  private readonly items: Item[] = [];
+  constructor(
+    @Inject(DATABASE_CONNECTION)
+    private readonly db: NodePgDatabase<typeof schema>,
+  ) {}
 
-  create(createItemDto: CreateItemDto): Item {
-    const item = new Item();
-    item.uuid = crypto.randomUUID();
-    item.price = createItemDto.price;
-    item.createdAt = new Date();
-    this.items.push(item);
+  async create(createItemDto: CreateItemDto): Promise<Item> {
+    const newItem: NewItem = {
+      price: createItemDto.price.toString(),
+    };
+
+    const [item] = await this.db.insert(items).values(newItem).returning();
     return item;
   }
 
-  findAll(): Item[] {
-    return this.items;
+  async findAll(): Promise<Item[]> {
+    return await this.db.select().from(items);
   }
 
-  findOne(uuid: string): Item | null {
-    const item = this.items.find((item) => {
-      return item.uuid === uuid;
-    });
+  async findOne(uuid: string): Promise<Item | null> {
+    const [item] = await this.db
+      .select()
+      .from(items)
+      .where(eq(items.uuid, uuid));
 
     return item ?? null;
   }
 
-  update(uuid: string, updateItemDto: UpdateItemDto): Item | null {
-    const itemIndex = this.items.findIndex((item) => item.uuid === uuid);
-    if (itemIndex === -1) {
+  async update(
+    uuid: string,
+    updateItemDto: UpdateItemDto,
+  ): Promise<Item | null> {
+    if (typeof updateItemDto.price !== 'number') {
       return null;
     }
 
-    if (typeof updateItemDto.price === 'number') {
-      this.items[itemIndex].price = updateItemDto.price;
-    }
+    const [item] = await this.db
+      .update(items)
+      .set({ price: updateItemDto.price.toString() })
+      .where(eq(items.uuid, uuid))
+      .returning();
 
-    return this.items[itemIndex];
+    return item ?? null;
   }
 
-  remove(uuid: string): Item | null {
-    const itemIndex = this.items.findIndex((item) => item.uuid === uuid);
-    if (itemIndex === -1) {
-      return null;
-    }
+  async remove(uuid: string): Promise<Item | null> {
+    const [item] = await this.db
+      .delete(items)
+      .where(eq(items.uuid, uuid))
+      .returning();
 
-    const removedItem = this.items[itemIndex];
-    this.items.splice(itemIndex, 1);
-    return removedItem;
+    return item ?? null;
   }
 }

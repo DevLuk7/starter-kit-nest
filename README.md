@@ -31,6 +31,45 @@
 $ npm install
 ```
 
+## Database setup
+
+This project uses PostgreSQL with Drizzle ORM. Follow these steps to set up the database:
+
+1. **Install PostgreSQL** (if not already installed)
+2. **Create a database** named `nestjs_db` (or update the `.env` file with your preferred database name)
+3. **Configure environment variables** in `.env`:
+   ```
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=your_password
+   DB_NAME=nestjs_db
+   ```
+4. **Run database migrations**:
+   ```bash
+   # Generate migration files
+   $ npm run db:generate
+   
+   # Apply migrations to database
+   $ npm run db:push
+   ```
+
+### Database scripts
+
+```bash
+# Generate new migration after schema changes
+$ npm run db:generate
+
+# Push schema changes to database
+$ npm run db:push
+
+# Run migrations
+$ npm run db:migrate
+
+# Open Drizzle Studio (database GUI)
+$ npm run db:studio
+```
+
 ## Compile and run the project
 
 ```bash

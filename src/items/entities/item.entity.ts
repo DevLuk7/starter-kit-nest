@@ -1,5 +1,1 @@
-export class Item {
-  uuid: string;
-  price: number;
-  createdAt: Date;
-}
+export * from '../../database/schema';

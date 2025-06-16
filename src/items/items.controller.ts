@@ -17,18 +17,18 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  create(@Body() createItemDto: CreateItemDto) {
+  async create(@Body() createItemDto: CreateItemDto) {
     return this.itemsService.create(createItemDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.itemsService.findAll();
   }
 
   @Get(':uuid')
-  findOne(@Param('uuid') uuid: string) {
-    const item = this.itemsService.findOne(uuid);
+  async findOne(@Param('uuid') uuid: string) {
+    const item = await this.itemsService.findOne(uuid);
 
     if (!item) {
       throw new NotFoundException();
@@ -38,12 +38,15 @@ export class ItemsController {
   }
 
   @Patch(':uuid')
-  update(@Param('uuid') uuid: string, @Body() updateItemDto: UpdateItemDto) {
+  async update(
+    @Param('uuid') uuid: string,
+    @Body() updateItemDto: UpdateItemDto,
+  ) {
     return this.itemsService.update(uuid, updateItemDto);
   }
 
   @Delete(':uuid')
-  remove(@Param('uuid') uuid: string) {
+  async remove(@Param('uuid') uuid: string) {
     return this.itemsService.remove(uuid);
   }
 }
