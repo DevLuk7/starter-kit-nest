@@ -28,7 +28,7 @@ jobs:
           echo "GIT_HASH=${GITHUB_SHA}" >> ${GITHUB_ENV}
       - name: Push and deploy
         # In future add to run --wait-for-service-stability
-        run: npx @nestjs/mau deploy --image node:22.16.0
+        run: npx @nestjs/mau deploy --image node:22.16.0 --dockerfile Dockerfile
         env:
           MAU_KEY: ${{ secrets.MAU_KEY }}
           MAU_SECRET: ${{ secrets.MAU_SECRET }}
