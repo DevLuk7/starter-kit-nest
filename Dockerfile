@@ -1,4 +1,4 @@
-FROM node:22.16.1-bullseye-slim
+FROM node:22.16-bullseye-slim
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN apt-get update && apt-get install -y curl
