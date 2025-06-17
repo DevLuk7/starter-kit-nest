@@ -19,9 +19,12 @@ export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';
           user: configService.get('DB_USER', ''),
           password: configService.get('DB_PASSWORD', ''),
           database: configService.get('DB_NAME', ''),
-          ssl: {
-            rejectUnauthorized: false,
-          },
+          ssl:
+            process.env.NODE_ENV === 'production'
+              ? {
+                  rejectUnauthorized: false,
+                }
+              : false,
         });
 
         return drizzle(pool, { schema });
