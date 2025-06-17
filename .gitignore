@@ -56,6 +56,10 @@ pids
 .env
 .env.local
 .env.*.local
+.env.dev
+.env.*.dev
+.env.prod
+.env.*.prod
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
