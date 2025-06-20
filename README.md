@@ -46,10 +46,11 @@ This project uses PostgreSQL with Drizzle ORM. Follow these steps to set up the 
    DB_NAME=nestjs_db
    ```
 4. **Run database migrations**:
+
    ```bash
    # Generate migration files
    $ npm run db:generate
-   
+
    # Apply migrations to database
    $ npm run db:push
    ```
@@ -135,3 +136,27 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Authentication
+
+This application uses AWS Cognito for JWT Bearer token authentication. All routes are protected by default except those marked with `@Public()` decorator.
+
+### Environment Setup
+
+Copy `.env.example` to `.env.local` and configure:
+
+```env
+AWS_REGION=us-east-1
+COGNITO_USER_POOL_ID=your-user-pool-id
+COGNITO_CLIENT_ID=your-client-id
+```
+
+### API Usage
+
+Send requests with Authorization header:
+
+```bash
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" http://localhost:3000/auth/protected
+```
+
+For detailed authentication documentation, see [AUTH_COGNITO_README.md](./AUTH_COGNITO_README.md).
